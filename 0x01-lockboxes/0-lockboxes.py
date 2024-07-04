@@ -1,29 +1,26 @@
 #!/usr/bin/python3
+'''Modules for lockboxes'''
 
-"""
-Problem: You have n number of locked boxes in front of you.
-         Each box is numbered sequentially from 0 to n - 1
-         and each box may contain keys to the other boxes.
-Task: Write a method that determines if all the boxes can be opened.
-"""
+
+from collections import deque
 
 
 def canUnlockAll(boxes):
-    """
-    Function that checks with boolean value if the list type and
-    length to invoke two for iterations one to traverse the list
-    and the other to compaer if key is idx or not in order to open
-    """
-    if type(boxes) is not list:
-        return False
-    elif (len(boxes)) == 0:
-        return False
-    for k in range(1, len(boxes) - 1):
-        boxes_checked = False
-        for idx in range(len(boxes)):
-            boxes_checked = k in boxes[idx] and k != idx
-            if boxes_checked:
-                break
-        if boxes_checked is False:
-            return boxes_checked
-    return True
+    '''The function uses sets to keep track of seen and unseen
+    boxes. It uses the keys found in the first box or previous
+    box to unlock the other boxes. i.e it iterates through the boxes
+    using the keys found in each box.
+    '''
+    n = len(boxes)
+    seen_boxes = set([0])
+    unseen_boxes = deque(boxes[0])
+
+    while unseen_boxes:
+        boxIdx = unseen_boxes.popleft()
+        if not (0 <= boxIdx < n):
+            continue
+        if boxIdx not in seen_boxes:
+            unseen_boxes.extend(boxes[boxIdx])
+            seen_boxes.add(boxIdx)
+
+    return n == len(seen_boxes)
