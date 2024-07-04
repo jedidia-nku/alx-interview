@@ -1,26 +1,32 @@
 #!/usr/bin/python3
-'''Modules for lockboxes'''
-
-
-from collections import deque
-
+"""
+Module to determine if all boxes can be opened.
+"""
 
 def canUnlockAll(boxes):
-    '''The function uses sets to keep track of seen and unseen
-    boxes. It uses the keys found in the first box or previous
-    box to unlock the other boxes. i.e it iterates through the boxes
-    using the keys found in each box.
-    '''
+    """
+    Determines if all boxes can be opened.
+    
+    Args:
+        boxes (list of list of int): A list of lists where each list contains keys
+                                     to other boxes.
+    
+    Returns:
+        bool: True if all boxes can be opened, False otherwise.
+    """
+    if not boxes:
+        return False
+
     n = len(boxes)
-    seen_boxes = set([0])
-    unseen_boxes = deque(boxes[0])
+    opened = [False] * n
+    opened[0] = True
+    keys = boxes[0]
 
-    while unseen_boxes:
-        boxIdx = unseen_boxes.popleft()
-        if not (0 <= boxIdx < n):
-            continue
-        if boxIdx not in seen_boxes:
-            unseen_boxes.extend(boxes[boxIdx])
-            seen_boxes.add(boxIdx)
+    for key in keys:
+        if key < n and not opened[key]:
+            opened[key] = True
+            keys.extend(boxes[key])
 
-    return n == len(seen_boxes)
+    return all(opened)
+
+# End of file with a newline character
